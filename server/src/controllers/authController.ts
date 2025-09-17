@@ -7,6 +7,7 @@ export async function sendEmailVerificationOTP(req: Request, res: Response): Pro
 
     try {
         console.log(email);
+        const response = await sendOTPToEmail(email);
     } catch (error) {
         console.log("Error sending email verification OTP:", error);
     }
