@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { ERROR_MESSAGES } from "../common/messages";
-import { existingUserCheckResult } from "../common/interface";
 
 const prisma = new PrismaClient();
 

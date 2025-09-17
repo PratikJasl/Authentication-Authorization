@@ -4,7 +4,7 @@ export const ERROR_MESSAGES = {
     SERVER_ERROR: 'Something went wrong, please try again later.',
     INCORRECT_PASSWORD: 'Incorrect Password',
     ACCOUNT_ALREADY_VERIFIED: 'Account already verified',
-    USER_ALREADY_EXISTS: 'A user with this Id already exists.',
+    USER_ALREADY_EXISTS: 'A user with this Email Id already exists.',
     USER_NOT_FOUND: 'User not found.',
     EMAIL_NOT_FOUND: 'Email is not registered with any user, Try again with valid email',
     INVALID_USER:'User With Given Id Not Exist',
