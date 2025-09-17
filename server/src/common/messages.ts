@@ -1,4 +1,11 @@
 export const ERROR_MESSAGES = {
+    //-------- Email Errors---------
+    EMAIL_NOT_SENT: "Email could not be sent",
+    EMAIL_NOT_FOUND: "Email not found",
+    EMAIL_ALREADY_EXISTS: "Email already exists",
+
+
+
     MISSING_FIELD: "Missing required fields",
     VALIDATION_FAILED: "Validation Failed",
     SERVER_ERROR: 'Something went wrong, please try again later.',
@@ -6,7 +13,6 @@ export const ERROR_MESSAGES = {
     ACCOUNT_ALREADY_VERIFIED: 'Account already verified',
     USER_ALREADY_EXISTS: 'A user with this Email Id already exists.',
     USER_NOT_FOUND: 'User not found.',
-    EMAIL_NOT_FOUND: 'Email is not registered with any user, Try again with valid email',
     INVALID_USER:'User With Given Id Not Exist',
     NOT_AUTH: 'Not Authorized Login Again',
     JWT_SECRET_ERROR: 'Jwt secret not defined',
@@ -27,6 +33,9 @@ export const ERROR_MESSAGES = {
   };
 
   export const SUCCESS_MESSAGES = {
+    OTP_SENT_SUCCESSFULLY: 'OTP sent successfully',
+
+
     USER_CREATED: 'New user created successfully',
     USER_LOGIN: 'User loged in successfully',
     USER_LOGOUT: 'User loged out successfully',
