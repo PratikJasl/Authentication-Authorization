@@ -9,7 +9,7 @@ export async function sendEmailVerificationOTP(req: Request, res: Response): Pro
     try {
         const result = await sendOtpToEmailService(email);
 
-        if (result.success) {
+        if(result.success) {
             res.cookie('otpToken', result.data, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
@@ -23,5 +23,6 @@ export async function sendEmailVerificationOTP(req: Request, res: Response): Pro
         }
     } catch (error) {
         console.error(ERROR_MESSAGES.EMAIL_NOT_SENT, error);
+        res.status(500).json({message: error instanceof Error ? error.message : ERROR_MESSAGES.EMAIL_NOT_SENT});
     }
 }
