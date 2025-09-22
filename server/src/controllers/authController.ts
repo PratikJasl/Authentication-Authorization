@@ -21,6 +21,7 @@ export async function sendEmailVerificationOTP(req: Request, res: Response): Pro
             res.status(400).json({ message: result.message })
             return;
         }
+        
     } catch (error) {
         console.error(ERROR_MESSAGES.EMAIL_NOT_SENT, error);
         res.status(500).json({message: error instanceof Error ? error.message : ERROR_MESSAGES.EMAIL_NOT_SENT});
