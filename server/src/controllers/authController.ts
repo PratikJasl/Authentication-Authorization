@@ -14,7 +14,7 @@ export async function sendEmailVerificationOTP(req: Request, res: Response): Pro
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 expires: new Date(Date.now() + 15 * 60 * 1000) // 15 minutes
-            })
+            });
             res.status(200).json({ message: SUCCESS_MESSAGES.OTP_SENT_SUCCESSFULLY })
             return;
         }else{
