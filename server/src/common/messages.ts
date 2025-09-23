@@ -6,8 +6,14 @@ export const ERROR_MESSAGES = {
     //-------- Invalid Data Errors ---------
     MISSING_FIELD: "Missing required fields",
     VALIDATION_FAILED: "Validation Failed, Please check the data you have provided",
+    TRY_AGAIN: "Please try again later.",
+    //-------- OTP Errors ---------
+    OTP_NOT_SENT: "OTP could not be sent",
+    OTP_NOT_FOUND: "OTP not found",
+    OTP_ALREADY_EXISTS: "OTP already exists",
+    OTP_EXPIRED: "OTP expired",
+    ERROR_VERIFYING_OTP: "Error verifying OTP",
 
-    
     SERVER_ERROR: 'Something went wrong, please try again later.',
     INCORRECT_PASSWORD: 'Incorrect Password',
     ACCOUNT_ALREADY_VERIFIED: 'Account already verified',
@@ -24,7 +30,7 @@ export const ERROR_MESSAGES = {
     INVALID_COACHING_SCHEDULE_ID: 'Invalid Coaching Schedule ID',
     INVALID_OTP: 'Invalid OTP',
     INVALID_DAYS: `Selected Days are Invalid, Please select from 'MTWTFSS'`,
-    OTP_EXPIRED: 'OTP Expired',
+    
     NO_DATA_FOUND: 'No data found',
     DATA_NOT_INSERTED:'Data Insertion Failed',
     EXISTING_LOCATION: 'Location with same name already exists',
@@ -33,8 +39,9 @@ export const ERROR_MESSAGES = {
   };
 
   export const SUCCESS_MESSAGES = {
+    //-------- OTP Success Messages ---------
     OTP_SENT_SUCCESSFULLY: 'OTP sent successfully',
-
+    OTP_VERIFIED: 'OTP verified successfully',
 
     USER_CREATED: 'New user created successfully',
     USER_LOGIN: 'User loged in successfully',
