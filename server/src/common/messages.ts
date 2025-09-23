@@ -1,13 +1,13 @@
 export const ERROR_MESSAGES = {
-    //-------- Email Errors---------
+    //-------- Email Errors ---------
     EMAIL_NOT_SENT: "Email could not be sent",
     EMAIL_NOT_FOUND: "Email not found",
     EMAIL_ALREADY_EXISTS: "Email already exists",
-
-
-
+    //-------- Invalid Data Errors ---------
     MISSING_FIELD: "Missing required fields",
-    VALIDATION_FAILED: "Validation Failed",
+    VALIDATION_FAILED: "Validation Failed, Please check the data you have provided",
+
+    
     SERVER_ERROR: 'Something went wrong, please try again later.',
     INCORRECT_PASSWORD: 'Incorrect Password',
     ACCOUNT_ALREADY_VERIFIED: 'Account already verified',
