@@ -1,22 +1,46 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useSetRecoilState } from "recoil";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { verifyEmailSchema } from "../../schema/authSchema";
-
+import { emailVerificationSchema, type emailVerificationData} from "../../schema/authSchema";
+import { emailState } from "../../atom/emailAtom";
+import { sendEmailVerificationOtp } from "../../services/auth/emailService";
 
 function VerifyEmail() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [redirect, setRedirect] = useState<boolean>(false);
+    const setEmail = useSetRecoilState(emailState);
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
-        resolver: yupResolver(verifyEmailSchema)
+        resolver: yupResolver(emailVerificationSchema)
     });
 
-    const onSubmit = (data: { email: string}) => {
+    const onSubmit = async (data: emailVerificationData) => {
         setIsLoading(true)
-        console.log(data);
-        setIsLoading(false)
-        reset();
+        setEmail(data.email);
+        console.log("Data Received from Verify Email Form:",data);
+        try {
+            const response = await sendEmailVerificationOtp(data);
+            console.log("Response Received is", response);
+            if(response.status === 200){
+                setRedirect(true);
+                toast.success("OTP has been sent successfully");
+                reset();
+            }else{
+                toast.error(response.data.message || "OTP generation failed. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error Sending OTP", error);
+            toast.error("Error Sending OTP, Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
+
+    if(redirect) {
+        return <Navigate to="/verify-otp" />;
+    }
 
     return(
         <>
@@ -55,9 +79,10 @@ function VerifyEmail() {
 
                     <button 
                         type="submit"
+                        disabled={isLoading}
                         className="md:text-lg shadow-lg p-2 min-w-64 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-500 hover:cursor-pointer"
                     >
-                        Verify Email
+                        {isLoading ? "Sending..." : "Send OTP"}
                     </button>
             </form>
         </>
