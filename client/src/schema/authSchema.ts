@@ -37,6 +37,7 @@ export const emailVerificationSchema = yup.object({
 })
 export type emailVerificationData = yup.InferType <typeof emailVerificationSchema>
 
+//@dev: Verify OTP schema and data type export.
 export const verifyEmailOtpSchema = yup.object({
     otp: yup
         .string()
@@ -44,3 +45,4 @@ export const verifyEmailOtpSchema = yup.object({
         .max(6, 'OTP must be 6 characters')
         .required('OTP is required'),
 })
+export type verifyOtpData = yup.InferType <typeof verifyEmailOtpSchema>

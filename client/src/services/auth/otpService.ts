@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { type emailVerificationData } from "../../schema/authSchema";
+import { type verifyOtpData } from "../../schema/authSchema";
 
-export async function sendEmailVerificationOtp(data: emailVerificationData){
+export async function otpVerification(data: verifyOtpData){
     try {
-        let response = await axios.post("http://localhost:3000/api/auth/verify-email",
+        let response = await axios.post("http://localhost:3000/api/auth/verify-otp",
         data,
         {
             headers: {
