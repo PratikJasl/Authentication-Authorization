@@ -14,6 +14,8 @@ export const ERROR_MESSAGES = {
     OTP_EXPIRED: "OTP expired",
     ERROR_VERIFYING_OTP: "Error verifying OTP",
 
+    USER_NOT_CREATED: "User could not be created",
+    UNAUTHORIZED: "Unauthorized access",
     SERVER_ERROR: 'Something went wrong, please try again later.',
     INCORRECT_PASSWORD: 'Incorrect Password',
     ACCOUNT_ALREADY_VERIFIED: 'Account already verified',

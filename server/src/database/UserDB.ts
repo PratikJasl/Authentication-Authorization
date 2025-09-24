@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Roles } from "@prisma/client";
 import { ERROR_MESSAGES } from "../common/messages";
 
 const prisma = new PrismaClient();
@@ -22,6 +22,32 @@ export async function checkExistingUser(email: string): Promise<boolean> {
             return false;
         }
 
+    } catch (error) {
+        console.error(ERROR_MESSAGES.SERVER_ERROR, error);
+        throw error;
+    }
+}
+
+//@dev: Function to add new user to DB.
+export async function addNewUser(email: string, password: string, role: Roles): Promise<boolean> {
+    try {
+        if(!email || !password || !role){
+            console.error(ERROR_MESSAGES.MISSING_FIELD);
+            throw new Error(ERROR_MESSAGES.MISSING_FIELD);
+        }
+
+        const newUser = await prisma.user.create({
+            data: {
+                email,
+                password,
+                role
+            }
+        });
+        if(newUser){
+            return true;
+        }else{
+            return false;
+        }
     } catch (error) {
         console.error(ERROR_MESSAGES.SERVER_ERROR, error);
         throw error;

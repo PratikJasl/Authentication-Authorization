@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { sendOtpToEmailService, verifyOtpService } from '../services/authService';
+import { sendOtpToEmailService, verifyOtpService, signUpService } from '../services/authService';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '../common/messages';
 import { errorResponse, successResponse } from '../common/response';
 
@@ -50,7 +50,7 @@ export async function otpVerification(req: Request, res: Response): Promise<void
             return;
         }else{
             //@dev: Clear cookie on failure to prevent stale tokens
-            res.cookie('otpToken', '', { maxAge: 0, httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+            //res.cookie('otpToken', '', { maxAge: 0, httpOnly: true, secure: process.env.NODE_ENV === 'production' });
             res.status(400).json(errorResponse(result.message));
             return;
         }
@@ -58,7 +58,29 @@ export async function otpVerification(req: Request, res: Response): Promise<void
     } catch (error) {
         //@dev: Clear cookie on failure to prevent stale tokens
         console.error(ERROR_MESSAGES.EMAIL_NOT_SENT, error);
-        res.cookie('otpToken', '', { maxAge: 0, httpOnly: true, secure: process.env.NODE_ENV === 'production' }); 
+        //res.cookie('otpToken', '', { maxAge: 0, httpOnly: true, secure: process.env.NODE_ENV === 'production' });
         res.status(500).json(errorResponse(error instanceof Error ? error.message : ERROR_MESSAGES.EMAIL_NOT_SENT));
+    }
+}
+
+export async function signUp(req: Request, res: Response): Promise<void> {
+    console.log('-----------------User Sign Up----------------------');
+    const { email, password, role } = req.body as { email: string, password: string, role: string };
+    const otpToken = req.cookies.otpToken;
+
+    console.log("User Sign Up:", email, role, otpToken);
+
+    try {
+        const result = await signUpService(email, password, role, otpToken);
+        if (result.success) {
+            res.status(201).json(successResponse(SUCCESS_MESSAGES.USER_CREATED));
+            return;
+        } else {
+            res.status(400).json(errorResponse(result.message));
+            return;
+        }
+    } catch (error) {
+        console.error(ERROR_MESSAGES.SERVER_ERROR, error);
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
     }
 }
