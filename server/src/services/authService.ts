@@ -1,8 +1,11 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from "bcrypt";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../common/messages";
 import { ApiResponse } from "../common/response";
 import { transporter, mailOptions } from "../common/nodeMailer";
-import { checkExistingUser } from "../database/UserDB";
+import { checkExistingUser, addNewUser } from "../database/UserDB";
+
+type Roles = "ADMIN" | "ENGINEER" | "EXPERT";
 
 export async function sendOtpToEmailService(email: string): Promise<ApiResponse<string>> {
     try {
@@ -79,3 +82,53 @@ export async function verifyOtpService(otp: string, otpToken: string): Promise<A
         throw error;
     }
 }
+
+export async function signUpService(email: string, password: string, role: string, otpToken: string): Promise<ApiResponse<string>> {
+    try {
+        //@dev: Verify email verification token.
+        const decoded = jwt.verify(otpToken, process.env.JWT_SECRET as string) as { email: string, email_verified: boolean };
+        console.log("Decoded OTP Token:", decoded);
+
+        if (!decoded || !decoded.email_verified) {
+            console.error(ERROR_MESSAGES.UNAUTHORIZED);
+            return {
+                success: false,
+                message: ERROR_MESSAGES.UNAUTHORIZED,
+            }
+        }
+
+        //@dev: Check for existing user.
+        let existingUser = await checkExistingUser(email);
+        if (existingUser) {
+            console.error(ERROR_MESSAGES.EMAIL_ALREADY_EXISTS);
+            return {
+                success: false,
+                message: ERROR_MESSAGES.EMAIL_ALREADY_EXISTS,
+            }
+        }
+
+        //@dev: hash password
+        let hashedPassword = await bcrypt.hash(password, 10);
+
+        //@dev: Cast role to Roles type
+        let newUser = await addNewUser(email, hashedPassword, role as any);
+        if (!newUser) {
+            console.error(ERROR_MESSAGES.USER_NOT_CREATED);
+            return {
+                success: false,
+                message: ERROR_MESSAGES.USER_NOT_CREATED,
+            }
+        }else{
+            return {
+            success: true,
+            message: SUCCESS_MESSAGES.USER_CREATED
+            }
+        }
+    } catch (error) {
+        console.error(ERROR_MESSAGES.SERVER_ERROR, error);
+        return {
+            success: false,
+            message: ERROR_MESSAGES.SERVER_ERROR,
+        }
+    }
+} 
