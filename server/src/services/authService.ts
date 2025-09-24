@@ -22,7 +22,7 @@ export async function sendOtpToEmailService(email: string): Promise<ApiResponse<
         const otpExpiry = new Date(Date.now() + 10 * 60 * 60 * 1000);
 
         //@dev: Generate JWT with OTP and expiry
-        const token = jwt.sign({email, Otp, otpExpiry}, process.env.JWT_SECRET as string, { expiresIn: '15m' });
+        const token = jwt.sign({email, Otp, otpExpiry}, process.env.JWT_SECRET as string, { expiresIn: '10m' });
 
         //@dev: Send email verification OTP over the mail.
         const mail = mailOptions(email, Otp);
@@ -67,10 +67,12 @@ export async function verifyOtpService(otp: string, otpToken: string): Promise<A
             }
         }
 
+        const verifiedToken = jwt.sign({ email: decoded.email, email_verified: true }, process.env.JWT_SECRET as string, { expiresIn: '15m' });
+
         return {
             success: true,
             message: SUCCESS_MESSAGES.OTP_VERIFIED,
-            data: decoded.email
+            data: verifiedToken
         }
     } catch (error) {
         console.log(ERROR_MESSAGES.ERROR_VERIFYING_OTP, error);
