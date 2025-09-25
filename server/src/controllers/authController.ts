@@ -73,9 +73,12 @@ export async function signUp(req: Request, res: Response): Promise<void> {
     try {
         const result = await signUpService(email, password, role, otpToken);
         if (result.success) {
-            res.status(201).json(successResponse(SUCCESS_MESSAGES.USER_CREATED));
+            //@dev: Clear cookie on failure to prevent stale tokens
+            res.cookie('otpToken', '', { maxAge: 0, httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+            res.status(201).json(successResponse(result.message));
             return;
         } else {
+            console.log("User Sign Up failed:", result.message);
             res.status(400).json(errorResponse(result.message));
             return;
         }

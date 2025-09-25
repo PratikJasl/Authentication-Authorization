@@ -3,6 +3,8 @@ export const ERROR_MESSAGES = {
     EMAIL_NOT_SENT: "Email could not be sent",
     EMAIL_NOT_FOUND: "Email not found",
     EMAIL_ALREADY_EXISTS: "Email already exists",
+    EMAIL_NOT_VERIFIED: "Email not verified",
+    EMAIL_DOES_NOT_MATCH: "Provided email does not match, the verified email",
     //-------- Invalid Data Errors ---------
     MISSING_FIELD: "Missing required fields",
     VALIDATION_FAILED: "Validation Failed, Please check the data you have provided",
@@ -13,6 +15,7 @@ export const ERROR_MESSAGES = {
     OTP_ALREADY_EXISTS: "OTP already exists",
     OTP_EXPIRED: "OTP expired",
     ERROR_VERIFYING_OTP: "Error verifying OTP",
+    SOMETHING_WENT_WRONG: "Something went wrong",
 
     USER_NOT_CREATED: "User could not be created",
     UNAUTHORIZED: "Unauthorized access",

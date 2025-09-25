@@ -40,7 +40,8 @@ export async function addNewUser(email: string, password: string, role: Roles): 
             data: {
                 email,
                 password,
-                role
+                role,
+                isVerified: true
             }
         });
         if(newUser){

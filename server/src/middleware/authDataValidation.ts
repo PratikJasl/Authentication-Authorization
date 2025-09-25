@@ -29,7 +29,7 @@ export function emailDataValidation(req: Request, res: Response, next: NextFunct
         }
     } catch (error) {
         console.log(ERROR_MESSAGES.SERVER_ERROR, error);
-        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR, (error as any).details));
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
         return;
     }
 }
@@ -73,11 +73,12 @@ export function otpDataValidation(req: Request, res: Response, next: NextFunctio
         }
     } catch (error) {
         console.log(ERROR_MESSAGES.SERVER_ERROR, error);
-        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR, (error as any).details));
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
         return;
     }
 }
 
+//@dev: Middleware to validate incoming sign up data.
 export function signUpDataValidation(req: Request, res: Response, next: NextFunction) {
     console.log("------Sign Up Data Validation Middleware------");
     try {
@@ -129,7 +130,7 @@ export function signUpDataValidation(req: Request, res: Response, next: NextFunc
         }
     } catch (error) {
         console.log(ERROR_MESSAGES.SERVER_ERROR, error);
-        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR, (error as any).details));
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
         return;
     }
 }
