@@ -28,6 +28,7 @@ function VerifyEmail() {
                 toast.success("OTP has been sent successfully");
                 reset();
             }else{
+                console.log("Error Response Received is", response);
                 toast.error(response.data.message || "OTP generation failed. Please try again.");
             }
         } catch (error) {
@@ -70,12 +71,12 @@ function VerifyEmail() {
                         </div>
                     </div>
 
-                    <Link 
+                    {/* <Link 
                         to='/'
                         className="text-blue-600 hover:underline text-sm"
                     >
                         Back
-                    </Link>
+                    </Link> */}
 
                     <button 
                         type="submit"
