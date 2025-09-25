@@ -4,6 +4,7 @@ import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../common/messages";
 import { ApiResponse } from "../common/response";
 import { transporter, mailOptions } from "../common/nodeMailer";
 import { checkExistingUser, addNewUser } from "../database/UserDB";
+import { type LoginResponseData } from "../common/interface";
 
 type Roles = "ADMIN" | "ENGINEER" | "EXPERT";
 
@@ -12,7 +13,7 @@ export async function sendOtpToEmailService(email: string): Promise<ApiResponse<
         //@dev: Check if user exists.
         const existingUser = await checkExistingUser(email);
 
-        if (existingUser) {
+        if (existingUser.status) {
             console.error(ERROR_MESSAGES.EMAIL_ALREADY_EXISTS);
             return {
                 success: false,
@@ -109,7 +110,7 @@ export async function signUpService(email: string, password: string, role: strin
 
         //@dev: Check for existing user.
         let existingUser = await checkExistingUser(email);
-        if (existingUser) {
+        if (existingUser.status) {
             console.error(ERROR_MESSAGES.EMAIL_ALREADY_EXISTS);
             return {
                 success: false,
@@ -142,3 +143,53 @@ export async function signUpService(email: string, password: string, role: strin
         }
     }
 } 
+
+export async function logInService(email: string, password: string): Promise<ApiResponse<LoginResponseData>> {
+    try {
+        const existingUser = await checkExistingUser(email);
+        if (!existingUser.status) {
+            return {
+                success: false,
+                message: ERROR_MESSAGES.USER_NOT_FOUND,
+                data: null
+            };
+        }
+
+        if (!existingUser.data || !existingUser.data.password) {
+            return {
+                success: false,
+                message: ERROR_MESSAGES.USER_NOT_FOUND,
+                data: null
+            };
+        }
+
+        const isMatch = await bcrypt.compare(password, existingUser.data.password);
+        if (!isMatch) {
+            return {
+                success: false,
+                message: ERROR_MESSAGES.INCORRECT_PASSWORD,
+                data: null
+            };
+        }
+
+        const token = jwt.sign({ email: existingUser.data.email, role: existingUser.data.role }, process.env.JWT_SECRET as string, { expiresIn: '1d' });
+        return {
+            success: true,
+            message: SUCCESS_MESSAGES.USER_LOGGED_IN,
+            data: {
+                token,
+                user: {
+                    email: existingUser.data.email,
+                    role: existingUser.data.role
+                }
+            }
+        };
+    } catch (error) {
+        console.error(ERROR_MESSAGES.SERVER_ERROR, error);
+        return {
+            success: false,
+            message: ERROR_MESSAGES.SERVER_ERROR,
+            data: null
+        };
+    }
+}

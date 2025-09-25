@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ERROR_MESSAGES } from "../common/messages";
 import { errorResponse } from "../common/response";
-import { otpVerificationSchema, emailVerificationSchema, signUpSchema } from "../schema/authSchema";
+import { otpVerificationSchema, emailVerificationSchema, signUpSchema, loginSchema } from "../schema/authSchema";
 
 //@dev: Middleware to validate incoming email.
 export function emailDataValidation(req: Request, res: Response, next: NextFunction) {
@@ -33,7 +33,7 @@ export function emailDataValidation(req: Request, res: Response, next: NextFunct
         return;
     }
 }
-
+ 
 //@dev: Middleware to validate incoming otp.
 export function otpDataValidation(req: Request, res: Response, next: NextFunction) {
     console.log("------OTP Data Validation Middleware------");
@@ -123,6 +123,42 @@ export function signUpDataValidation(req: Request, res: Response, next: NextFunc
 
         try {
             const value = signUpSchema.validateSync(req.body);
+            next();
+        } catch (error) {
+            res.status(400).json(errorResponse(ERROR_MESSAGES.VALIDATION_FAILED));
+            return;
+        }
+    } catch (error) {
+        console.log(ERROR_MESSAGES.SERVER_ERROR, error);
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
+        return;
+    }
+}
+
+//@dev: Middleware to validate incoming login data.
+export function loginDataValidation(req: Request, res: Response, next: NextFunction) {
+    console.log("------Login Data Validation Middleware------");
+    try {
+        if(req.body === undefined || req.body === null) {
+            res.status(400).json(errorResponse(ERROR_MESSAGES.MISSING_FIELD));
+            return;
+        }
+
+        const { email, password } = req.body;
+
+        
+        if (!email || email === undefined) {
+            res.status(400).json(errorResponse(ERROR_MESSAGES.MISSING_FIELD));
+            return;
+        }
+
+        if (!password || password === undefined) {
+            res.status(400).json(errorResponse(ERROR_MESSAGES.MISSING_FIELD));
+            return;
+        }
+
+        try {
+            const value = loginSchema.validateSync(req.body);
             next();
         } catch (error) {
             res.status(400).json(errorResponse(ERROR_MESSAGES.VALIDATION_FAILED));

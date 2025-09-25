@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { emailVerificationSchema, type emailVerificationData} from "../../schema/authSchema";
 import { emailState } from "../../atom/emailAtom";
 import { sendEmailVerificationOtp } from "../../services/auth/emailService";
+import axios from "axios";
 
 function VerifyEmail() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -22,18 +23,21 @@ function VerifyEmail() {
         console.log("Data Received from Verify Email Form:",data);
         try {
             const response = await sendEmailVerificationOtp(data);
-            console.log("Response Received is", response);
+
+            console.log("Success Response Received is", response);
             if(response.status === 200){
                 setRedirect(true);
                 toast.success("OTP has been sent successfully");
                 reset();
-            }else{
-                console.log("Error Response Received is", response);
-                toast.error(response.data.message || "OTP generation failed. Please try again.");
             }
         } catch (error) {
-            console.error("Error Sending OTP", error);
-            toast.error("Error Sending OTP, Please try again.");
+            if (axios.isAxiosError(error) && error.response) {
+                //@dev: Handle the non 2xx responses here.
+                const apiError = error.response.data;
+                toast.error(apiError.message || "OTP generation failed. Please try again.");
+            } else {
+                toast.error("An unexpected error occurred. Please try again.");
+            }
         } finally {
             setIsLoading(false);
         }

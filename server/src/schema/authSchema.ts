@@ -36,3 +36,17 @@ export const signUpSchema = yup.object({
         .required('Role is required'),
 })
 export type signUpData = yup.InferType <typeof signUpSchema>
+
+
+//@dev: Login verification schema and data type export.
+export const loginSchema = yup.object({
+    email: yup
+        .string()
+        .email('Invalid email format')
+        .required('Email is required'),
+    password: yup
+        .string()
+        .min(6, 'Password must be at least 6 characters long')
+        .required('Password is required'),
+})
+export type loginData = yup.InferType <typeof loginSchema>
