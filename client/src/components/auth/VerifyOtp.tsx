@@ -120,7 +120,7 @@ function VerifyOTP(){
     }
 
     if(redirect){
-        return <Navigate to={'/SignUp'} />
+        return <Navigate to={'/signup'} />
     }
 
     return(
