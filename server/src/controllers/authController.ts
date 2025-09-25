@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { sendOtpToEmailService, verifyOtpService, signUpService } from '../services/authService';
+import { sendOtpToEmailService, verifyOtpService, signUpService, logInService } from '../services/authService';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '../common/messages';
 import { errorResponse, successResponse } from '../common/response';
+
 
 export async function sendEmailVerificationOTP(req: Request, res: Response): Promise<void> {
     console.log('-----------------Send Email Verification OTP----------------------');
@@ -19,8 +20,13 @@ export async function sendEmailVerificationOTP(req: Request, res: Response): Pro
             res.status(200).json(successResponse(SUCCESS_MESSAGES.OTP_SENT_SUCCESSFULLY));
             return;
         }else{
-            res.status(400).json(errorResponse(result.message));
-            return;
+            let statusCode = 400;
+            if (result.message === ERROR_MESSAGES.EMAIL_ALREADY_EXISTS) {
+                statusCode = 409; // Use 409 Conflict for resource conflicts
+            } else if (result.message === ERROR_MESSAGES.EMAIL_NOT_SENT) {
+                statusCode = 500; // Treat mailer failure as an internal server error
+            }
+            res.status(statusCode).json(errorResponse(result.message));
         }
         
     } catch (error) {
@@ -85,5 +91,31 @@ export async function signUp(req: Request, res: Response): Promise<void> {
     } catch (error) {
         console.error(ERROR_MESSAGES.SERVER_ERROR, error);
         res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
+    }
+}
+
+export async function logIn(req: Request, res: Response): Promise<void> {
+    console.log('-----------------User Log In----------------------');
+    const { email, password } = req.body as { email: string, password: string };
+
+    console.log("User Log In:", email);
+
+    try {
+        const result = await logInService(email, password);
+        if (result.success) {
+            res.status(200).cookie('token', result.data?.token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                expires: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+            }).json(successResponse(result.message, result.data?.user));
+            return;
+        } else {
+            console.log("User Log In failed:", result.message);
+            res.status(400).json(errorResponse(result.message));
+            return;
+        }
+    } catch (error) {
+        res.json(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
+        return
     }
 }

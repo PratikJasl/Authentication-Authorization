@@ -28,25 +28,26 @@ function SignUp(){
     //@dev Function to register new user.
     const registerUser = async (data: signUpFormData) => {
         setIsLoading(true);
-        let response: any;
         console.log("Sending SignUp Request with Data:", data);
+
         try {
-            response = await signUpService(data);
+            const response = await signUpService(data); 
+            console.log("Success Response Received is", response);
+
             if(response.status === 201){
                 setRedirect(true);
                 toast.success("SignUp Successful");
                 reset();
-            }else{
-                toast.error(response.data.message || "Failed, Please try again.");
-                navigate("/verify-email");
-            } 
+            }
         } catch (error) {
             console.log("Reached catch block:", error);
             if (axios.isAxiosError(error) && error.response) {
-                toast.error(error.response.data.message);
+                const apiError = error.response.data;
+                toast.error(apiError.message || "SignUp failed. Please try again.");
             } else {
                 console.error("An unexpected error occurred:", error);
                 toast.error("An unexpected error occurred. Please try again.");
+                navigate("/verify-email");
             }
         } finally {
             setIsLoading(false)

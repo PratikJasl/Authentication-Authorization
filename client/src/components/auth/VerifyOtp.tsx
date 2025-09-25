@@ -104,12 +104,12 @@ function VerifyOTP(){
                 setRedirect(true);
                 toast.success("Email Verified Successfully");
                 reset();
-            }else{
-                toast.error(response.data.message || "Email verification failed. Please try again.");
             }
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
-                toast.error(error.response.data.message);
+                //@dev: Handle the non 2xx responses here.
+                const apiError = error.response.data;
+                toast.error(apiError.message || "Email verification failed. Please try again.");
             } else {
                 console.error("An unexpected error occurred:", error);
                 toast.error("An unexpected error occurred. Please try again.");

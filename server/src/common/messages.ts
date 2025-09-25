@@ -49,7 +49,7 @@ export const ERROR_MESSAGES = {
     OTP_VERIFIED: 'OTP verified successfully',
 
     USER_CREATED: 'New user created successfully',
-    USER_LOGIN: 'User loged in successfully',
+    USER_LOGGED_IN: 'User loged in successfully',
     USER_LOGOUT: 'User loged out successfully',
     USER_NOT_FOUND: 'User not found.',
     USER_DATA_UPDATED: 'User data updated successfully',

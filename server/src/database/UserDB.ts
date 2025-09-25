@@ -1,10 +1,11 @@
 import { PrismaClient, Roles } from "@prisma/client";
 import { ERROR_MESSAGES } from "../common/messages";
+import { existingUserCheck } from "../common/interface";
 
 const prisma = new PrismaClient();
 
 //@dev: Function to check existing user using email or userId.
-export async function checkExistingUser(email: string): Promise<boolean> {
+export async function checkExistingUser(email: string): Promise<existingUserCheck> {
     try {
         if(!email){
             console.error(ERROR_MESSAGES.MISSING_FIELD);
@@ -14,12 +15,24 @@ export async function checkExistingUser(email: string): Promise<boolean> {
         //@check email exists or not
         const existingUser = await prisma.user.findUnique({
             where: { email: email },
+            select: {
+                email: true,
+                password: true,
+                role: true,
+                isVerified: true
+            }
         });
 
         if (existingUser) {
-            return true;
+            return {
+                status: true,
+                data: existingUser
+            }
         }else{
-            return false;
+            return {
+                status: false,
+                data: null
+            };
         }
 
     } catch (error) {
