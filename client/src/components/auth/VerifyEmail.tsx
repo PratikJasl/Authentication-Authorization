@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { emailVerificationSchema, type emailVerificationData} from "../../schema/authSchema";
-import { emailState } from "../../atom/emailAtom";
+import { emailState } from "../../atom/userAtom";
 import { sendEmailVerificationOtp } from "../../services/auth/emailService";
 import axios from "axios";
 

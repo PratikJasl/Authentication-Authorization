@@ -5,7 +5,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useRecoilValue } from "recoil";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { emailState } from "../../atom/emailAtom";
+import { emailState } from "../../atom/userAtom";
 import { verifyEmailOtpSchema, type verifyOtpData } from "../../schema/authSchema";
 import { otpVerification } from "../../services/auth/otpService";
 

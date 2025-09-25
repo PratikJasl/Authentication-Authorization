@@ -4,6 +4,7 @@ import  VerifyEmail from './components/auth/VerifyEmail'
 import { Route, Routes } from 'react-router-dom'
 import VerifyOTP from './components/auth/VerifyOtp';
 import SignUp from './components/auth/SignUp';
+import LogIn from './components/auth/LogIn';
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<LogIn />} />
       </Routes>
 
       <ToastContainer

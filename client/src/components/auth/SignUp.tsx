@@ -6,7 +6,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { signUpSchema, type signUpFormData } from "../../schema/authSchema";
 import { useRecoilValue } from "recoil";
-import { emailState } from "../../atom/emailAtom";
+import { emailState } from "../../atom/userAtom";
 import { signUpService } from "../../services/auth/signUpService";
 
 function SignUp(){
