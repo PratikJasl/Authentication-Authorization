@@ -89,11 +89,21 @@ export async function signUpService(email: string, password: string, role: strin
         const decoded = jwt.verify(otpToken, process.env.JWT_SECRET as string) as { email: string, email_verified: boolean };
         console.log("Decoded OTP Token:", decoded);
 
+        //@dev: Check if email is verified.
         if (!decoded || !decoded.email_verified) {
-            console.error(ERROR_MESSAGES.UNAUTHORIZED);
+            console.error(ERROR_MESSAGES.EMAIL_NOT_VERIFIED);
             return {
                 success: false,
-                message: ERROR_MESSAGES.UNAUTHORIZED,
+                message: ERROR_MESSAGES.EMAIL_NOT_VERIFIED,
+            }
+        }
+
+        //@dev: Check if email matches.
+        if(decoded.email !== email) {
+            console.error(ERROR_MESSAGES.EMAIL_DOES_NOT_MATCH);
+            return {
+                success: false,
+                message: ERROR_MESSAGES.EMAIL_DOES_NOT_MATCH,
             }
         }
 
@@ -110,7 +120,7 @@ export async function signUpService(email: string, password: string, role: strin
         //@dev: hash password
         let hashedPassword = await bcrypt.hash(password, 10);
 
-        //@dev: Cast role to Roles type
+        //@dev: Save user to the DB
         let newUser = await addNewUser(email, hashedPassword, role as any);
         if (!newUser) {
             console.error(ERROR_MESSAGES.USER_NOT_CREATED);
