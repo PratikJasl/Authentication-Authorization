@@ -30,14 +30,14 @@ function LogIn(){
         try {
             response = await loginService(data);
             if(response.status === 200){ 
-                    setRedirect(true);
-                    setUserInfo(response.data.data);     //@dev: Set user info to Recoil state.
-                    //saveLoginStatus();                   //@dev: Save user login to local storage.
-                    setGlobalLoginStatus(true);          //@dev: Save login Status.
-                    reset();
-                    toast.success("LogIn Successful");
+                setRedirect(true);
+                setUserInfo(response.data.data);     //@dev: Set user info to Recoil state.
+                //saveLoginStatus();                   //@dev: Save user login to local storage.
+                setGlobalLoginStatus(true);          //@dev: Save login Status.
+                reset();
+                toast.success("LogIn Successful");
             }else{
-                    toast.error(response.data.message || "Login failed. Please try again.");
+                toast.error(response.data.message || "Login failed. Please try again.");
             }
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
@@ -61,7 +61,7 @@ function LogIn(){
             onSubmit={handleSubmit(onSubmit)} 
             className="flex flex-col items-center gap-3 lg:w-96 w-74 bg-gray-10 shadow-gray-500 shadow-lg p-10 rounded-2xl">
 
-            <h1 className="md:text-3xl text-xl font-bold text-blue-400 mb-2">Welcome Back</h1>
+            <h1 className="md:text-3xl text-xl font-bold text-blue-500 mb-2">LogIn</h1>
 
             <div className="flex flex-col gap-5">
                 <div className="flex flex-col gap-1">
@@ -101,7 +101,7 @@ function LogIn(){
                 </div>              
             </div>
 
-            <Link to="/ForgotPassword" className="text-blue-500 underline hover:text-green-500">Forgot password?</Link>
+            <Link to="/ForgotPassword" className="text-blue-500 underline hover:text-blue-300">Forgot password?</Link>
 
             <button 
                 type="submit"

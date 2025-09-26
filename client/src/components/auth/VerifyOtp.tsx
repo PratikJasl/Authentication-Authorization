@@ -1,51 +1,54 @@
 import axios from 'axios';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useRecoilValue } from "recoil";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { emailState } from "../../atom/userAtom";
 import { verifyEmailOtpSchema, type verifyOtpData } from "../../schema/authSchema";
 import { otpVerification } from "../../services/auth/otpService";
+import { sendEmailVerificationOtp } from '../../services/auth/emailService';
 
 function VerifyOTP(){
     const [ isLoading, setIsLoading ] = useState(false);
     const [ redirect, setRedirect ] = useState(false);
-    //const [ isResending, setIsResending ] = useState(false);
-    //const [coolDownTimer, setCoolDownTimer] = useState(0);
+    const [ isResending, setIsResending ] = useState(false);
+    const [coolDownTimer, setCoolDownTimer] = useState(0);
     const emailFromRecoil = useRecoilValue(emailState);
-    //const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
     const navigate = useNavigate();
     const { register, handleSubmit, formState: {errors}, reset } = useForm({
         resolver: yupResolver(verifyEmailOtpSchema),
     });
 
     //@dev: useEffect for handling the countdown logic
-    // useEffect(() => {
-    //     if (coolDownTimer > 0) {
-    //         if (timerRef.current) {
-    //             clearInterval(timerRef.current);
-    //         }
-    //         timerRef.current = setInterval(() => {
-    //             setCoolDownTimer((prev) => prev - 1);
-    //         }, 1000);
-    //     } else {
-    //         if (timerRef.current) {
-    //             clearInterval(timerRef.current);
-    //             timerRef.current = null;
-    //         }
-    //         setIsResending(false); //@dev: Enable resend button when timer runs out
-    //     }
+    useEffect(() => {
+        if (coolDownTimer > 0) {
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
+            timerRef.current = setInterval(() => {
+                setCoolDownTimer((prev) => prev - 1);
+            }, 1000);
+        } else {
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+                timerRef.current = null;
+            }
+            setIsResending(false); //@dev: Enable resend button when timer runs out
+        }
 
-    //     //@dev: Clean-up function
-    //     return () => {
-    //         if (timerRef.current) {
-    //             clearInterval(timerRef.current);
-    //         }
-    //     };
-    // }, [coolDownTimer]);
+        //@dev: Clean-up function
+        return () => {
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
+        };
+    }, [coolDownTimer]);
 
+
+    //@dev: Check if email exists in Recoil state, if not redirect to verify email.
     useEffect(() => {
         if(!emailFromRecoil){
             toast.error("Your email verification session has expired or was interrupted. Please start over.");
@@ -53,39 +56,39 @@ function VerifyOTP(){
         }
     }, [emailFromRecoil, navigate]);
 
-    // async function sendOTP(){
-    //     if (isResending) {
-    //         return;
-    //     }
+    async function sendOTP(){
+        if (isResending) {
+            return;
+        }
 
-    //     const email = emailFromRecoil;
-    //     if (!email) {
-    //         toast.error("Email not found. Please go back to reset password.");
-    //         setIsResending(false);
-    //         setCoolDownTimer(0);
-    //         return;
-    //     }
+        const email = emailFromRecoil;
+        if (!email) {
+            toast.error("Email not found. Please go back to reset password.");
+            setIsResending(false);
+            setCoolDownTimer(0);
+            return;
+        }
 
-    //     //@dev: Set isResending and coolDownTimer.
-    //     setIsResending(true);
-    //     setCoolDownTimer(30);
+        //@dev: Set isResending and coolDownTimer.
+        setIsResending(true);
+        setCoolDownTimer(30);
 
-    //     try {
-    //         let response = await sendEmailVerificationOtp({email: email});
-    //         if(response.status === 200){
-    //             toast.success("OTP has been send");
-    //         }else{
-    //             toast.error(response.data.message || "OTP generation failed. Please try again.");
-    //         }
-    //     } catch (error) { 
-    //         if (axios.isAxiosError(error) && error.response) {
-    //             toast.error(error.response.data.message);
-    //         } else {
-    //             console.error("An unexpected error occurred:", error);
-    //             toast.error("An unexpected error occurred. Please try again.");
-    //         }
-    //     }
-    // }
+        try {
+            let response = await sendEmailVerificationOtp({email: email});
+            if(response.status === 200){
+                toast.success("OTP has been send");
+            }else{
+                toast.error(response.data.message || "OTP generation failed. Please try again.");
+            }
+        } catch (error) { 
+            if (axios.isAxiosError(error) && error.response) {
+                toast.error(error.response.data.message);
+            } else {
+                console.error("An unexpected error occurred:", error);
+                toast.error("An unexpected error occurred. Please try again.");
+            }
+        }
+    }
 
     async function onSubmit(data: verifyOtpData){
         setIsLoading(true);
@@ -151,19 +154,19 @@ function VerifyOTP(){
                         )}
                     </div>
 
-                    {/* <div className="">
-                        <h3>If you didn't receive a code,  
+                    <div className="">
+                        <h3>didn't receive a code ?  
                             <a 
                                 onClick={sendOTP} 
                                 className={`
-                                    text-green-500 p-1
-                                    ${isResending ? 'cursor-not-allowed opacity-60' : 'hover:text-green-300 hover:cursor-pointer'}
+                                    text-blue-500 p-1
+                                    ${isResending ? 'cursor-not-allowed opacity-60' : 'hover:text-blue-300 hover:cursor-pointer'}
                                 `}
                             >
                                 {isResending ? `resend (${coolDownTimer}s)` : 'resend'}
                             </a>
                         </h3>
-                    </div> */}
+                    </div>
 
                     <div>
                         <button 
@@ -175,14 +178,6 @@ function VerifyOTP(){
                         </button>
                     </div>
                 </div>
-                
-                <Link 
-                    to="/Verify-email" 
-                    className="flex flex-row md:mt-2 mt-1 items-center justify-center gap-1 text-green-500 hover:text-green-300"
-                > 
-                    {/* <ArrowLeftIcon className="h-5 w-5" /> */}
-                    Back
-                </Link>
             </form>
         </>
     )
