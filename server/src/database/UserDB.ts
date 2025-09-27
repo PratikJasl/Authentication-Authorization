@@ -13,7 +13,7 @@ export async function checkExistingUser(email: string): Promise<boolean> {
 
         //@check email exists or not
         const existingUser = await prisma.user.findUnique({
-            where: { email: email },
+            where: { userEmail: email },
         });
 
         if (existingUser) {

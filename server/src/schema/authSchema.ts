@@ -9,6 +9,7 @@ export const emailVerificationSchema = yup.object({
 })
 export type emailVerificationData = yup.InferType <typeof emailVerificationSchema>
 
+
 //@dev: OTP verification schema and data type export.
 export const otpVerificationSchema = yup.object({
     otp: yup
@@ -17,3 +18,25 @@ export const otpVerificationSchema = yup.object({
         .required('OTP is required'),
 })
 export type otpVerificationData = yup.InferType <typeof otpVerificationSchema>
+
+
+//@dev: SignUp verification schema and data type export.
+export const signUpSchema = yup.object({
+    email: yup
+        .string()
+        .email('Invalid email format')
+        .required('Email is required'),
+    password: yup
+        .string()
+        .min(6, 'Password must be at least 6 characters long')
+        .required('Password is required'),
+    confirmPassword: yup
+        .string()
+        .oneOf([yup.ref('password'), undefined], 'Passwords must match')
+        .required('Confirm Password is required'),
+    role: yup
+        .string()
+        .oneOf(['Admin', 'Engineer', 'Expert'], 'Invalid role')
+        .required('Role is required'),
+})
+export type signUpData = yup.InferType <typeof signUpSchema>

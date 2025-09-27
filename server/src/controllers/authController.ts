@@ -50,7 +50,7 @@ export async function otpVerification(req: Request, res: Response): Promise<void
             return;
         }else{
             //@dev: Clear cookie on failure to prevent stale tokens
-            res.cookie('otpToken', '', { maxAge: 0, httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+            //res.cookie('otpToken', '', { maxAge: 0, httpOnly: true, secure: process.env.NODE_ENV === 'production' });
             res.status(400).json(errorResponse(result.message));
             return;
         }
@@ -58,7 +58,7 @@ export async function otpVerification(req: Request, res: Response): Promise<void
     } catch (error) {
         //@dev: Clear cookie on failure to prevent stale tokens
         console.error(ERROR_MESSAGES.EMAIL_NOT_SENT, error);
-        res.cookie('otpToken', '', { maxAge: 0, httpOnly: true, secure: process.env.NODE_ENV === 'production' }); 
+        //res.cookie('otpToken', '', { maxAge: 0, httpOnly: true, secure: process.env.NODE_ENV === 'production' });
         res.status(500).json(errorResponse(error instanceof Error ? error.message : ERROR_MESSAGES.EMAIL_NOT_SENT));
     }
 }
