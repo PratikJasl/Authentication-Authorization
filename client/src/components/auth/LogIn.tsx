@@ -3,21 +3,20 @@ import { useState } from "react";
 import { toast } from 'react-toastify';
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { Navigate } from "react-router-dom";
 import { userInfoState, logInStatus } from "../../atom/userAtom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema, type loginFormData } from "../../schema/authSchema";
 import { loginService } from "../../services/auth/logInService";
-// import { saveLoginStatus } from "../../services/storeUserInfo";
+import { saveLoginStatus } from "../../services/auth/storeUserInfo";
 
-//@dev: Login Form Data Type.
 
 function LogIn(){
     const [redirect, setRedirect] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const setUserInfo = useSetRecoilState(userInfoState);
-    const setGlobalLoginStatus = useSetRecoilState(logInStatus);
+    const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+    const [LoginStatus, setLoginStatus] = useRecoilState(logInStatus);
     const { register, handleSubmit, formState: {errors}, reset } = useForm({
             resolver: yupResolver(loginSchema),
     });
@@ -31,9 +30,11 @@ function LogIn(){
             response = await loginService(data);
             if(response.status === 200){ 
                 setRedirect(true);
+                console.log("Login successful:", response.data.data);
                 setUserInfo(response.data.data);     //@dev: Set user info to Recoil state.
-                //saveLoginStatus();                   //@dev: Save user login to local storage.
-                setGlobalLoginStatus(true);          //@dev: Save login Status.
+                saveLoginStatus();                   //@dev: Save user login to local storage.
+                setLoginStatus(true);          //@dev: Save login Status.
+                console.log("Data stores in atoms is:", { userInfo, LoginStatus });
                 reset();
                 toast.success("LogIn Successful");
             }else{
@@ -102,6 +103,8 @@ function LogIn(){
             </div>
 
             <Link to="/ForgotPassword" className="text-blue-500 underline hover:text-blue-300">Forgot password?</Link>
+
+            <Link to="/verify-email" className="text-gray-500 hover:text-gray-300">Don't have an account? <span className="text-blue-500 underline hover:text-blue-300">Sign Up</span></Link>
 
             <button 
                 type="submit"
