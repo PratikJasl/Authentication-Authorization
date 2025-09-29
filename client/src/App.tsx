@@ -15,6 +15,7 @@ function App() {
     <>
       <Navbar />
       <Routes>
+        <Route path="/" element={<LogIn />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/signup" element={<SignUp />} />
