@@ -4,7 +4,7 @@ import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../common/messages";
 import { ApiResponse } from "../common/response";
 import { transporter, mailOptions } from "../common/nodeMailer";
 import { checkExistingUser, addNewUser } from "../database/UserDB";
-import { type LoginResponseData } from "../common/interface";
+import { existingUserCheck, type LoginResponseData } from "../common/interface";
 
 type Roles = "ADMIN" | "ENGINEER" | "EXPERT";
 
@@ -184,6 +184,34 @@ export async function logInService(email: string, password: string): Promise<Api
                 }
             }
         };
+    } catch (error) {
+        console.error(ERROR_MESSAGES.SERVER_ERROR, error);
+        return {
+            success: false,
+            message: ERROR_MESSAGES.SERVER_ERROR,
+            data: null
+        };
+    }
+}
+
+export async function verifyUserService(email: string): Promise<ApiResponse<existingUserCheck["data"]>> {
+    try {
+        const existingUser = await checkExistingUser(email);
+        if (!existingUser.status || !existingUser.data) {
+            return {
+                success: false,
+                message: ERROR_MESSAGES.UNAUTHORIZED,
+                data: null
+            };
+        }
+
+        //@dev: If user exists and is authorized return user data.
+        return {
+            success: true,
+            message: SUCCESS_MESSAGES.USER_VERIFIED,
+            data: existingUser.data
+        };
+        
     } catch (error) {
         console.error(ERROR_MESSAGES.SERVER_ERROR, error);
         return {

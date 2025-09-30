@@ -1,7 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import { ERROR_MESSAGES } from "../common/messages";
 import { errorResponse } from "../common/response";
+import jwt from 'jsonwebtoken';
 import { otpVerificationSchema, emailVerificationSchema, signUpSchema, loginSchema } from "../schema/authSchema";
+
+declare global {
+    namespace Express {
+        interface Request {
+            user?: {
+                email: string;
+                role: string;
+            };
+        }
+    }
+}
 
 //@dev: Middleware to validate incoming email.
 export function emailDataValidation(req: Request, res: Response, next: NextFunction) {
@@ -164,6 +176,51 @@ export function loginDataValidation(req: Request, res: Response, next: NextFunct
             res.status(400).json(errorResponse(ERROR_MESSAGES.VALIDATION_FAILED));
             return;
         }
+    } catch (error) {
+        console.log(ERROR_MESSAGES.SERVER_ERROR, error);
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
+        return;
+    }
+}
+
+//@dev: Middleware to validate the incoming request's.
+export function requestValidation(req: Request, res: Response, next: NextFunction) {
+    console.log("------Request Validation Middleware------");
+    let token;
+    try {
+        if(req.cookies === undefined || req.cookies === null) {
+            res.status(400).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+        }
+
+        if(req.cookies && req.cookies.token) {
+            token = req.cookies.token;
+            console.log("Token from cookies:", token);
+        }
+
+        if(!token) {
+            res.status(401).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+            return;
+        }
+
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+            console.log("Decoded JWT:", decoded);
+            if (typeof decoded === "object" && decoded !== null && "email" in decoded && "role" in decoded) {
+                req.user = {
+                    email: (decoded as any).email,
+                    role: (decoded as any).role
+                };
+            } else {
+                res.status(401).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+                return;
+            }
+        } catch (error) {
+            console.log(ERROR_MESSAGES.UNAUTHORIZED, error);
+            res.status(401).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+            return;
+        }
+
+        next();
     } catch (error) {
         console.log(ERROR_MESSAGES.SERVER_ERROR, error);
         res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
