@@ -190,6 +190,7 @@ export function requestValidation(req: Request, res: Response, next: NextFunctio
     try {
         if(req.cookies === undefined || req.cookies === null) {
             res.status(400).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+            return;
         }
 
         if(req.cookies && req.cookies.token) {

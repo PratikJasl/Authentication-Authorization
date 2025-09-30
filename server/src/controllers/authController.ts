@@ -121,22 +121,41 @@ export async function logIn(req: Request, res: Response): Promise<void> {
     }
 }
 
+export async function logOut(req: Request, res: Response): Promise<void> {
+    console.log('-----------------User Log Out----------------------');
+    //@dev: Clear the clients cookies.
+    try {
+        res.status(200).clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+        }).json(successResponse(SUCCESS_MESSAGES.USER_LOGOUT));
+        return;
+    } catch (error) {
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
+        return;
+    }
+}
+
 export async function verifyUser(req: Request, res: Response): Promise<void> {
     console.log('-----------------Verify User----------------------');
     try {
         const userEmail = req.user?.email;
-        if (!userEmail) {
+        const userRole = req.user?.role;
+        console.log("User Email:", userEmail);
+
+        if (!userEmail || !userRole) {
             res.status(401).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
             return;
         }
 
-        const userCheck = await verifyUserService(userEmail);
+        const userCheck = await verifyUserService(userEmail, userRole);
         if (!userCheck.success) {
             res.status(401).json(errorResponse(userCheck.message));
             return;
         }
 
-        res.status(200).json(successResponse(SUCCESS_MESSAGES.USER_VERIFIED, userCheck.data));
+        res.status(200).json(successResponse(SUCCESS_MESSAGES.USER_VERIFIED, {email: userCheck.data?.email, role: userCheck.data?.role}));
     } catch (error) {
         console.error(ERROR_MESSAGES.SERVER_ERROR, error);
         res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
