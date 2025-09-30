@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { sendOtpToEmailService, verifyOtpService, signUpService, logInService } from '../services/authService';
+import { sendOtpToEmailService, verifyOtpService, signUpService, logInService, verifyUserService } from '../services/authService';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '../common/messages';
 import { errorResponse, successResponse } from '../common/response';
+import { checkExistingUser } from '../database/UserDB';
 
 
 export async function sendEmailVerificationOTP(req: Request, res: Response): Promise<void> {
@@ -117,5 +118,27 @@ export async function logIn(req: Request, res: Response): Promise<void> {
     } catch (error) {
         res.json(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
         return
+    }
+}
+
+export async function verifyUser(req: Request, res: Response): Promise<void> {
+    console.log('-----------------Verify User----------------------');
+    try {
+        const userEmail = req.user?.email;
+        if (!userEmail) {
+            res.status(401).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+            return;
+        }
+
+        const userCheck = await verifyUserService(userEmail);
+        if (!userCheck.success) {
+            res.status(401).json(errorResponse(userCheck.message));
+            return;
+        }
+
+        res.status(200).json(successResponse(SUCCESS_MESSAGES.USER_VERIFIED, userCheck.data));
+    } catch (error) {
+        console.error(ERROR_MESSAGES.SERVER_ERROR, error);
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
     }
 }

@@ -47,28 +47,21 @@ export const ERROR_MESSAGES = {
     //-------- OTP Success Messages ---------
     OTP_SENT_SUCCESSFULLY: 'OTP sent successfully',
     OTP_VERIFIED: 'OTP verified successfully',
-
+    //-------- User Success Messages ---------
     USER_CREATED: 'New user created successfully',
     USER_LOGGED_IN: 'User loged in successfully',
     USER_LOGOUT: 'User loged out successfully',
     USER_NOT_FOUND: 'User not found.',
     USER_DATA_UPDATED: 'User data updated successfully',
     USER_PLAN_DATA_CREATED: 'User Plan data has been successfully created',
-    LOCATION_ADDED: "New location added successfully",
-    COACHING_PLAN_ADDED: "New coaching plan added successfully",
-    COACHING_SCHEDULE_ADDED: "New coaching schedule added successfully",
+    USER_VERIFIED: 'User verified successfully',
+    USER_DATA_FETCHED: 'User data fetched successfully',
+    //-------- General Success Messages ---------
     VERIFICATION_EMAIL_SEND: 'Verification Email Send Successfully',
     RESET_PASSWORD_EMAIL_SEND: 'Reset Password OTP Send Successfully',
     EMAIL_VERIFIED: 'Email verified succeddsully',
     PASSWORD_RESET_SUCCESS: 'Password has been reset successfully',
-    LOCATION_DATA_FETCHED: 'Location data fetched successfully',
-    USER_DATA_FETCHED: 'User data fetched successfully',
-    PLAN_DATA_FETCHED: 'Coaching plan data fetched successfully',
-    SCHEDULE_DATA_FETCHED: 'Coaching schedule data fetched successfully',
     NO_DATA_FOUND:'Data Not Available',
     ACCOUNT_ALREADY_VERIFIED: 'Account already verified',
-    LOCATION_REMOVED: 'Location removed successfully',
-    SCHEDULE_REMOVED: 'Coaching Schedule removed successfully',
-    ATTENDANCE_DATA_FETCHED:'Attendence Data Fetched Successfully',
     UPDATE_SUCCESSFUL:'Updation Successful'
   }
