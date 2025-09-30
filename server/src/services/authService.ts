@@ -194,10 +194,20 @@ export async function logInService(email: string, password: string): Promise<Api
     }
 }
 
-export async function verifyUserService(email: string): Promise<ApiResponse<existingUserCheck["data"]>> {
+export async function verifyUserService(email: string, role: string): Promise<ApiResponse<existingUserCheck["data"]>> {
     try {
+        //@dev: Check if user exists.
         const existingUser = await checkExistingUser(email);
         if (!existingUser.status || !existingUser.data) {
+            return {
+                success: false,
+                message: ERROR_MESSAGES.UNAUTHORIZED,
+                data: null
+            };
+        }
+
+        //@dev: Check if user role is correct.
+        if (existingUser.data.role !== role) {
             return {
                 success: false,
                 message: ERROR_MESSAGES.UNAUTHORIZED,

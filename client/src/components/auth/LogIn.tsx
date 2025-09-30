@@ -1,22 +1,20 @@
 import axios from "axios";
 import { useState } from "react";
 import { toast } from 'react-toastify';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
-import { Navigate } from "react-router-dom";
-import { userInfoState, logInStatus } from "../../atom/userAtom";
+import { logInStatus } from "../../atom/userAtom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema, type loginFormData } from "../../schema/authSchema";
 import { loginService } from "../../services/auth/logInService";
-import { saveLoginStatus } from "../../services/auth/storeUserInfo";
 
 
 function LogIn(){
-    const [redirect, setRedirect] = useState(false);
+    const navigate = useNavigate(); 
     const [isLoading, setIsLoading] = useState(false);
-    const [userInfo, setUserInfo] = useRecoilState(userInfoState);
-    const [LoginStatus, setLoginStatus] = useRecoilState(logInStatus);
+    const [loginStatus, setLoginStatus] = useRecoilState(logInStatus);
+    
     const { register, handleSubmit, formState: {errors}, reset } = useForm({
             resolver: yupResolver(loginSchema),
     });
@@ -29,14 +27,16 @@ function LogIn(){
         try {
             response = await loginService(data);
             if(response.status === 200){ 
-                setRedirect(true);
                 console.log("Login successful:", response.data.data);
-                setUserInfo(response.data.data);     //@dev: Set user info to Recoil state.
-                saveLoginStatus();                   //@dev: Save user login to local storage.
-                setLoginStatus(true);          //@dev: Save login Status.
-                console.log("Data stores in atoms is:", { userInfo, LoginStatus });
-                reset();
+                setLoginStatus({
+                    isLoggedIn: true,
+                    email: response.data.data.email,
+                    role: response.data.data.role
+                });                                 //@dev: Save login Status.
+                console.log("Data stored in atoms is:", { loginStatus });
                 toast.success("LogIn Successful");
+                reset();
+                navigate('/');                      //@dev: After successful login, redirect the user to the home page.
             }else{
                 toast.error(response.data.message || "Login failed. Please try again.");
             }
@@ -51,11 +51,6 @@ function LogIn(){
             setIsLoading(false);
         }
     };
-
-    //@dev: After successful login, redirect the user to the home page.
-    if(redirect){
-        return <Navigate to={'/'} />
-    }
 
     return(
         <form 
