@@ -9,7 +9,6 @@ export const emailVerificationSchema = yup.object({
 })
 export type emailVerificationData = yup.InferType <typeof emailVerificationSchema>
 
-
 //@dev: OTP verification schema and data type export.
 export const otpVerificationSchema = yup.object({
     otp: yup
@@ -50,3 +49,10 @@ export const loginSchema = yup.object({
         .required('Password is required'),
 })
 export type loginData = yup.InferType <typeof loginSchema>
+
+
+
+
+
+
+

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,16 +7,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Station {
+  stationId    Int      @id @default(autoincrement())
+  stationName  String   @unique
+  // Relations
+  errors       Errors[]  // One-to-many with Errors
+}
+
+model Errors {
+  errorId      Int      @id @default(autoincrement())
+  errorCode    String   @unique()
+  stationId    Int      // Foreign key to Station
+  // Relations
+  station      Station  @relation(fields: [stationId], references: [stationId])
+  debugSteps   DebugSteps[]  // One-to-many with DebugSteps
+}
+
+model DebugSteps {
+  debugStepId        Int     @id @default(autoincrement())
+  stepCode           String  @unique
+  errorId            Int     // Foreign key to Errors
+  stepDescription    String
+  location           String
+  componentNames     String
+  netSignal          String
+  conclusion         String
+  debugStepSuccess   String
+  debugStepFail      String
+  sequence           String
+  idealDiodeRange    String
+  error              Errors  @relation(fields: [errorId], references: [errorId])
+}
+
 model User {
-  userId                  Int @id @default(autoincrement())
-  email                   String @unique
-  password                String
-  role                    Roles
-  isVerified              Boolean @default(false)
+  userId        Int     @id @default(autoincrement())
+  userEmail     String  @unique
+  userPassword  String
+  userRole      Roles
+  isVerified    Boolean @default(false)
+}
+
+model EmpSuggestion {
+  empSuggestionId  Int     @id @default(autoincrement())
+  empId            Int     // Reference to an employee, not enforced as relation
+  errorId          Int
+  suggestion       String
+  status           SuggestionStatus @default(PENDING)
 }
 
 enum Roles {
-  ADMIN
+  USER
   ENGINEER
-  EXPERT
+  FA_EXPERT
+  ADMIN
+}
+
+enum SuggestionStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }

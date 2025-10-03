@@ -8,6 +8,8 @@ const express_1 = __importDefault(require("express"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const authRoutes_1 = require("./routes/authRoutes");
 const errorHandler_1 = __importDefault(require("./middleware/errorHandler"));
+const adminRoutes_1 = __importDefault(require("./routes/adminRoutes"));
+const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const port = 3000;
 const app = (0, express_1.default)();
 //@dev: Middlewares
@@ -19,6 +21,8 @@ app.use((0, cors_1.default)({
 }));
 //@dev: Routes
 app.use('/api/auth', authRoutes_1.authRouter);
+app.use('/api/admin', adminRoutes_1.default);
+app.use('/api/user', userRoutes_1.default);
 //@dev: Global Error Handling Middleware
 app.use(errorHandler_1.default);
 app.listen(port, () => {

@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { ERROR_MESSAGES } from "../common/messages";
 import { errorResponse } from "../common/response";
-import jwt from 'jsonwebtoken';
 import { otpVerificationSchema, emailVerificationSchema, signUpSchema, loginSchema } from "../schema/authSchema";
+import jwt from 'jsonwebtoken';
+  
 
 declare global {
     namespace Express {

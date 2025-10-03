@@ -14,13 +14,7 @@ export async function checkExistingUser(email: string): Promise<existingUserChec
 
         //@check email exists or not
         const existingUser = await prisma.user.findUnique({
-            where: { email: email },
-            select: {
-                email: true,
-                password: true,
-                role: true,
-                isVerified: true
-            }
+            where: { userEmail: email },
         });
 
         if (existingUser) {
@@ -51,9 +45,9 @@ export async function addNewUser(email: string, password: string, role: Roles): 
 
         const newUser = await prisma.user.create({
             data: {
-                email,
-                password,
-                role,
+                userEmail:email,
+                userPassword:password,
+                userRole:role,
                 isVerified: true
             }
         });
