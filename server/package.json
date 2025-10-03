@@ -10,7 +10,7 @@
   "description": "",
   "dependencies": {
     "@prisma/client": "^6.16.2",
-    "clear": "^0.1.0",
+    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
@@ -24,6 +24,7 @@
     "yup": "^1.7.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ERROR_MESSAGES } from "../common/messages";
 import { errorResponse } from "../common/response";
-import { otpVerificationSchema, emailVerificationSchema, signUpSchema } from "../schema/authSchema";
+import { otpVerificationSchema, emailVerificationSchema } from "../schema/authSchema";
 
 //@dev: Middleware to validate incoming email.
 export function emailDataValidation(req: Request, res: Response, next: NextFunction) {
@@ -29,11 +29,11 @@ export function emailDataValidation(req: Request, res: Response, next: NextFunct
         }
     } catch (error) {
         console.log(ERROR_MESSAGES.SERVER_ERROR, error);
-        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR, (error as any).details));
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
         return;
     }
 }
-
+ 
 //@dev: Middleware to validate incoming otp.
 export function otpDataValidation(req: Request, res: Response, next: NextFunction) {
     console.log("------OTP Data Validation Middleware------");
@@ -73,11 +73,12 @@ export function otpDataValidation(req: Request, res: Response, next: NextFunctio
         }
     } catch (error) {
         console.log(ERROR_MESSAGES.SERVER_ERROR, error);
-        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR, (error as any).details));
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
         return;
     }
 }
 
+//@dev: Middleware to validate incoming sign up data.
 export function signUpDataValidation(req: Request, res: Response, next: NextFunction) {
     console.log("------Sign Up Data Validation Middleware------");
     try {
@@ -92,9 +93,9 @@ export function signUpDataValidation(req: Request, res: Response, next: NextFunc
             return;
         }
 
-        const { email, password, confirmPassword, role } = req.body;
+        const { email, password, role } = req.body;
         const otpToken = req.cookies.otpToken;
-        console.log("Line number 97:", email, password, confirmPassword, role, otpToken);
+        console.log("Line number 97:", email, password, role, otpToken);
 
         if (!email || email === undefined) {
             res.status(400).json(errorResponse(ERROR_MESSAGES.MISSING_FIELD));
@@ -102,11 +103,6 @@ export function signUpDataValidation(req: Request, res: Response, next: NextFunc
         }
 
         if (!password || password === undefined) {
-            res.status(400).json(errorResponse(ERROR_MESSAGES.MISSING_FIELD));
-            return;
-        }
-
-        if (!confirmPassword || confirmPassword === undefined) {
             res.status(400).json(errorResponse(ERROR_MESSAGES.MISSING_FIELD));
             return;
         }
@@ -134,7 +130,90 @@ export function signUpDataValidation(req: Request, res: Response, next: NextFunc
         }
     } catch (error) {
         console.log(ERROR_MESSAGES.SERVER_ERROR, error);
-        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR, (error as any).details));
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
         return;
     }
 }
+
+//@dev: Middleware to validate incoming login data.
+export function loginDataValidation(req: Request, res: Response, next: NextFunction) {
+    console.log("------Login Data Validation Middleware------");
+    try {
+        if(req.body === undefined || req.body === null) {
+            res.status(400).json(errorResponse(ERROR_MESSAGES.MISSING_FIELD));
+            return;
+        }
+
+        const { email, password } = req.body;
+
+        
+        if (!email || email === undefined) {
+            res.status(400).json(errorResponse(ERROR_MESSAGES.MISSING_FIELD));
+            return;
+        }
+
+        if (!password || password === undefined) {
+            res.status(400).json(errorResponse(ERROR_MESSAGES.MISSING_FIELD));
+            return;
+        }
+
+        try {
+            const value = loginSchema.validateSync(req.body);
+            next();
+        } catch (error) {
+            res.status(400).json(errorResponse(ERROR_MESSAGES.VALIDATION_FAILED));
+            return;
+        }
+    } catch (error) {
+        console.log(ERROR_MESSAGES.SERVER_ERROR, error);
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
+        return;
+    }
+}
+
+//@dev: Middleware to validate the incoming request's.
+export function requestValidation(req: Request, res: Response, next: NextFunction) {
+    console.log("------Request Validation Middleware------");
+    let token;
+    try {
+        if(req.cookies === undefined || req.cookies === null) {
+            res.status(400).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+            return;
+        }
+
+        if(req.cookies && req.cookies.token) {
+            token = req.cookies.token;
+            console.log("Token from cookies:", token);
+        }
+
+        if(!token) {
+            res.status(401).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+            return;
+        }
+
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+            console.log("Decoded JWT:", decoded);
+            if (typeof decoded === "object" && decoded !== null && "email" in decoded && "role" in decoded) {
+                req.user = {
+                    email: (decoded as any).email,
+                    role: (decoded as any).role
+                };
+            } else {
+                res.status(401).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+                return;
+            }
+        } catch (error) {
+            console.log(ERROR_MESSAGES.UNAUTHORIZED, error);
+            res.status(401).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+            return;
+        }
+
+        next();
+    } catch (error) {
+        console.log(ERROR_MESSAGES.SERVER_ERROR, error);
+        res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
+        return;
+    }
+}
+        

@@ -11,6 +11,7 @@ export const loginSchema = yup.object({
         .max(20, 'Password must be at most 20 characters')
         .required('Password is required'),
 })
+export type loginFormData = yup.InferType<typeof loginSchema>;
 
 
 export const signUpSchema = yup.object({
@@ -27,6 +28,10 @@ export const signUpSchema = yup.object({
         .string()
         .oneOf([yup.ref('password'), undefined], 'Passwords must match')
         .required('Confirm Password is required'), 
+    role: yup
+        .string()
+        .oneOf(['ADMIN', 'ENGINEER', 'EXPERT'], 'Invalid role')
+        .required('Role is required'),
 })
 export type signUpFormData = yup.InferType<typeof signUpSchema>;
 

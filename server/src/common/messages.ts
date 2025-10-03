@@ -3,6 +3,8 @@ export const ERROR_MESSAGES = {
     EMAIL_NOT_SENT: "Email could not be sent",
     EMAIL_NOT_FOUND: "Email not found",
     EMAIL_ALREADY_EXISTS: "Email already exists",
+    EMAIL_NOT_VERIFIED: "Email not verified",
+    EMAIL_DOES_NOT_MATCH: "Provided email does not match, the verified email",
     //-------- Invalid Data Errors ---------
     MISSING_FIELD: "Missing required fields",
     VALIDATION_FAILED: "Validation Failed, Please check the data you have provided",
@@ -13,7 +15,10 @@ export const ERROR_MESSAGES = {
     OTP_ALREADY_EXISTS: "OTP already exists",
     OTP_EXPIRED: "OTP expired",
     ERROR_VERIFYING_OTP: "Error verifying OTP",
+    SOMETHING_WENT_WRONG: "Something went wrong",
 
+    USER_NOT_CREATED: "User could not be created",
+    UNAUTHORIZED: "Unauthorized access",
     UNAUTHORIZED: "Unauthorized access",
     SERVER_ERROR: 'Something went wrong, please try again later.',
     INCORRECT_PASSWORD: 'Incorrect Password',
@@ -43,28 +48,21 @@ export const ERROR_MESSAGES = {
     //-------- OTP Success Messages ---------
     OTP_SENT_SUCCESSFULLY: 'OTP sent successfully',
     OTP_VERIFIED: 'OTP verified successfully',
-
+    //-------- User Success Messages ---------
     USER_CREATED: 'New user created successfully',
-    USER_LOGIN: 'User loged in successfully',
+    USER_LOGGED_IN: 'User loged in successfully',
     USER_LOGOUT: 'User loged out successfully',
     USER_NOT_FOUND: 'User not found.',
     USER_DATA_UPDATED: 'User data updated successfully',
     USER_PLAN_DATA_CREATED: 'User Plan data has been successfully created',
-    LOCATION_ADDED: "New location added successfully",
-    COACHING_PLAN_ADDED: "New coaching plan added successfully",
-    COACHING_SCHEDULE_ADDED: "New coaching schedule added successfully",
+    USER_VERIFIED: 'User verified successfully',
+    USER_DATA_FETCHED: 'User data fetched successfully',
+    //-------- General Success Messages ---------
     VERIFICATION_EMAIL_SEND: 'Verification Email Send Successfully',
     RESET_PASSWORD_EMAIL_SEND: 'Reset Password OTP Send Successfully',
     EMAIL_VERIFIED: 'Email verified succeddsully',
     PASSWORD_RESET_SUCCESS: 'Password has been reset successfully',
-    LOCATION_DATA_FETCHED: 'Location data fetched successfully',
-    USER_DATA_FETCHED: 'User data fetched successfully',
-    PLAN_DATA_FETCHED: 'Coaching plan data fetched successfully',
-    SCHEDULE_DATA_FETCHED: 'Coaching schedule data fetched successfully',
     NO_DATA_FOUND:'Data Not Available',
     ACCOUNT_ALREADY_VERIFIED: 'Account already verified',
-    LOCATION_REMOVED: 'Location removed successfully',
-    SCHEDULE_REMOVED: 'Coaching Schedule removed successfully',
-    ATTENDANCE_DATA_FETCHED:'Attendence Data Fetched Successfully',
     UPDATE_SUCCESSFUL:'Updation Successful'
   }
