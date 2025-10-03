@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { authRouter } from "./routes/authRoutes";
 import errorHandler from "./middleware/errorHandler";
 import adminRouter from "./routes/adminRoutes";
+import userRouter from "./routes/userRoutes";
 
 const port = 3000;
 const app = express();
@@ -19,6 +20,7 @@ app.use(cors({
 //@dev: Routes
 app.use('/api/auth', authRouter);
 app.use('/api/admin',adminRouter);
+app.use('/api/user',userRouter)
 
 //@dev: Global Error Handling Middleware
 app.use(errorHandler);

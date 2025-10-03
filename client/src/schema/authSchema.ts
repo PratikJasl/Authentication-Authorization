@@ -12,6 +12,7 @@ export const loginSchema = yup.object({
         .required('Password is required'),
 })
 
+
 export const signUpSchema = yup.object({
     email: yup
         .string()
@@ -27,6 +28,8 @@ export const signUpSchema = yup.object({
         .oneOf([yup.ref('password'), undefined], 'Passwords must match')
         .required('Confirm Password is required'), 
 })
+export type signUpFormData = yup.InferType<typeof signUpSchema>;
+
 
 //@dev: Email verifcation schema and data type export.
 export const emailVerificationSchema = yup.object({
@@ -36,6 +39,7 @@ export const emailVerificationSchema = yup.object({
         .required('Email is required'),
 })
 export type emailVerificationData = yup.InferType <typeof emailVerificationSchema>
+
 
 //@dev: Verify OTP schema and data type export.
 export const verifyEmailOtpSchema = yup.object({
