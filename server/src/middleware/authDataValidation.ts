@@ -1,7 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 import { ERROR_MESSAGES } from "../common/messages";
 import { errorResponse } from "../common/response";
-import { otpVerificationSchema, emailVerificationSchema } from "../schema/authSchema";
+import { otpVerificationSchema, emailVerificationSchema, signUpSchema, loginSchema } from "../schema/authSchema";
+import jwt from 'jsonwebtoken';
+  
+
+declare global {
+    namespace Express {
+        interface Request {
+            user?: {
+                email: string;
+                role: string;
+            };
+        }
+    }
+}
 
 //@dev: Middleware to validate incoming email.
 export function emailDataValidation(req: Request, res: Response, next: NextFunction) {

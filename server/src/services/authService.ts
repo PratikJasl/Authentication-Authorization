@@ -155,7 +155,7 @@ export async function logInService(email: string, password: string): Promise<Api
             };
         }
 
-        if (!existingUser.data || !existingUser.data.password) {
+        if (!existingUser.data || !existingUser.data.userPassword) {
             return {
                 success: false,
                 message: ERROR_MESSAGES.USER_NOT_FOUND,
@@ -163,7 +163,7 @@ export async function logInService(email: string, password: string): Promise<Api
             };
         }
 
-        const isMatch = await bcrypt.compare(password, existingUser.data.password);
+        const isMatch = await bcrypt.compare(password, existingUser.data.userPassword);
         if (!isMatch) {
             return {
                 success: false,
@@ -172,15 +172,15 @@ export async function logInService(email: string, password: string): Promise<Api
             };
         }
 
-        const token = jwt.sign({ email: existingUser.data.email, role: existingUser.data.role }, process.env.JWT_SECRET as string, { expiresIn: '1d' });
+        const token = jwt.sign({ email: existingUser.data.userEmail, role: existingUser.data.userRole }, process.env.JWT_SECRET as string, { expiresIn: '1d' });
         return {
             success: true,
             message: SUCCESS_MESSAGES.USER_LOGGED_IN,
             data: {
                 token,
                 user: {
-                    email: existingUser.data.email,
-                    role: existingUser.data.role
+                    email: existingUser.data.userEmail,
+                    role: existingUser.data.userRole
                 }
             }
         };
@@ -207,7 +207,7 @@ export async function verifyUserService(email: string, role: string): Promise<Ap
         }
 
         //@dev: Check if user role is correct.
-        if (existingUser.data.role !== role) {
+        if (existingUser.data.userRole !== role) {
             return {
                 success: false,
                 message: ERROR_MESSAGES.UNAUTHORIZED,

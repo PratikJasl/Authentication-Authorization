@@ -19,7 +19,6 @@ export const ERROR_MESSAGES = {
 
     USER_NOT_CREATED: "User could not be created",
     UNAUTHORIZED: "Unauthorized access",
-    UNAUTHORIZED: "Unauthorized access",
     SERVER_ERROR: 'Something went wrong, please try again later.',
     INCORRECT_PASSWORD: 'Incorrect Password',
     ACCOUNT_ALREADY_VERIFIED: 'Account already verified',

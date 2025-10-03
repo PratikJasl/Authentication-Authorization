@@ -1,9 +1,9 @@
 export interface existingUserCheck {
     status: boolean;
     data: {
-        email: string;
-        password: string;
-        role: string;
+        userEmail: string;
+        userPassword: string;
+        userRole: string;
         isVerified: boolean;
     } | null
 }

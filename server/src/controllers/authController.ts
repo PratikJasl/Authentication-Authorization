@@ -155,7 +155,7 @@ export async function verifyUser(req: Request, res: Response): Promise<void> {
             return;
         }
 
-        res.status(200).json(successResponse(SUCCESS_MESSAGES.USER_VERIFIED, {email: userCheck.data?.email, role: userCheck.data?.role}));
+        res.status(200).json(successResponse(SUCCESS_MESSAGES.USER_VERIFIED, {email: userCheck.data?.userEmail, role: userCheck.data?.userRole}));
     } catch (error) {
         console.error(ERROR_MESSAGES.SERVER_ERROR, error);
         res.status(500).json(errorResponse(ERROR_MESSAGES.SERVER_ERROR));
