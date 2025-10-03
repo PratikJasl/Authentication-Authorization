@@ -6,12 +6,12 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { signUpSchema, type signUpFormData } from "../../schema/authSchema";
 import { useRecoilValue } from "recoil";
-import { emailState } from "../../atom/userAtom";
+import { logInStatus } from "../../atom/userAtom";
 import { signUpService } from "../../services/auth/signUpService";
 
 function SignUp(){
     const navigate = useNavigate();
-    const emailFromRecoil = useRecoilValue(emailState);
+    const emailFromRecoil = useRecoilValue(logInStatus);
     const [isLoading, setIsLoading] = useState(false);
     const [redirect, setRedirect] = useState(false);
     const { register, handleSubmit, formState: {errors}, reset } = useForm({
@@ -73,7 +73,7 @@ function SignUp(){
                     id="email"
                     disabled={true}
                     type="email"
-                    value={emailFromRecoil}
+                    value={emailFromRecoil.email ?? ""}
                     //autoComplete="email"
                     //placeholder="Example@gmail.com"
                     {...register("email")}
