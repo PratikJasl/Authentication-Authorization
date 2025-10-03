@@ -74,6 +74,16 @@ function Navbar(){
                             Upload
                         </Link>
                     )}
+
+                    <Link to="/upload" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsOpen(false)}>
+                    Upload
+                    </Link>
+                    {/* Role-based UI change */}
+                    {role === 'Admin' && (
+                        <Link to="/upload" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsOpen(false)}>
+                            Upload
+                        </Link>
+                    )}
                 </>
                 ) : (
                 <Link to="/login" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsOpen(false)}>

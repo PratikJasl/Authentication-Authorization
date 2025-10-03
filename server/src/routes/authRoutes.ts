@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { emailDataValidation, loginDataValidation, otpDataValidation, requestValidation, signUpDataValidation } from "../middleware/authDataValidation";
+import { authorize, emailDataValidation, loginDataValidation, otpDataValidation, requestValidation, signUpDataValidation } from "../middleware/authDataValidation";
 import { logIn, logOut, otpVerification, sendEmailVerificationOTP, signUp, verifyUser } from "../controllers/authController";
 
 const authRouter = Router();

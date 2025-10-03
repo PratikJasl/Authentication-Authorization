@@ -228,3 +228,49 @@ export function requestValidation(req: Request, res: Response, next: NextFunctio
         return;
     }
 }
+
+// export function authorize(req: Request, res: Response, next: NextFunction, allowedRoles: string[]) {
+//     console.log("------Authorization Middleware------");
+
+//     if(!req.user || !req.user.role){
+//         console.log("No user object inside the request body, check if request validation middleware is used");
+//         res.status(401).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+//         return;
+//     }
+
+//     const userRole = req.user.role;
+//     console.log("User Role is:", userRole);
+
+//     if(!allowedRoles.includes(userRole)){
+//         console.log(ERROR_MESSAGES.UNAUTHORIZED)
+//         res.status(403).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+//         return;
+//     }
+
+//     console.log("Authorization successful.");
+//     next();
+// }
+
+export const authorize = (...allowedRoles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    console.log("------Authorization Middleware------");
+
+    if (!req.user || !req.user.role) {
+      console.log("No user object inside the request body, check if request validation middleware is used");
+      res.status(401).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+      return;
+    }
+
+    const userRole = req.user.role;
+    console.log(`User role: '${userRole}', Required roles: [${allowedRoles.join(', ')}]`);
+
+    if (!allowedRoles.includes(userRole)) {
+      console.log(ERROR_MESSAGES.UNAUTHORIZED)
+      res.status(403).json(errorResponse(ERROR_MESSAGES.UNAUTHORIZED));
+      return;
+    }
+
+    console.log("Authorization successful.");
+    next();
+  };
+};

@@ -18,7 +18,7 @@ function App() {
       <AuthProvider>
         <Navbar />
         <Routes>
-          <Route path="/" element={<LogIn />} />
+          <Route path="/" element={<Search />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/verify-otp" element={<VerifyOTP />} />
           <Route path="/signup" element={<SignUp />} />
