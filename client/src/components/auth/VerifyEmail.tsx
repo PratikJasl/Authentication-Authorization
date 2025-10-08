@@ -5,21 +5,21 @@ import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { emailVerificationSchema, type emailVerificationData} from "../../schema/authSchema";
-import { emailState } from "../../atom/userAtom";
+import { logInStatus } from "../../atom/userAtom";
 import { sendEmailVerificationOtp } from "../../services/auth/emailService";
 import axios from "axios";
 
 function VerifyEmail() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [redirect, setRedirect] = useState<boolean>(false);
-    const setEmail = useSetRecoilState(emailState);
+    const setEmail = useSetRecoilState(logInStatus);
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
         resolver: yupResolver(emailVerificationSchema)
     });
 
     const onSubmit = async (data: emailVerificationData) => {
         setIsLoading(true)
-        setEmail(data.email);
+        setEmail({ email: data.email });
         console.log("Data Received from Verify Email Form:",data);
         try {
             const response = await sendEmailVerificationOtp(data);
@@ -75,17 +75,10 @@ function VerifyEmail() {
                         </div>
                     </div>
 
-                    {/* <Link 
-                        to='/'
-                        className="text-blue-600 hover:underline text-sm"
-                    >
-                        Back
-                    </Link> */}
-
-                    <button 
+                    <button
                         type="submit"
                         disabled={isLoading}
-                        className="md:text-lg shadow-lg p-2 min-w-64 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-500 hover:cursor-pointer"
+                        className="md:text-lg shadow-lg p-2 min-w-64 mt-5 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-500 hover:cursor-pointer"
                     >
                         {isLoading ? "Sending..." : "Send OTP"}
                     </button>

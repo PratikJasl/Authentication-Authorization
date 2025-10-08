@@ -4,8 +4,9 @@ function Search(){
     const [searchTerm, setSearchTerm] = useState("");
         
     return(
-        <section id="search" className="w-fit h-fit p-5 mb-10">
-            <div className="bg-white p-8 rounded-xl shadow-2xl border border-gray-200 mt-8">
+        <section id="search" className="w-full h-full p-5 mx-10 mb-10 fixed top-0 left-1/2 transform -translate-x-1/2">
+            {/* Search Bar*/}
+            <div className="bg-white p-8 rounded-xl mt-8">
                 <h2 className="text-2xl font-extrabold text-gray-800 mb-6 text-center">
                     Search Error Codes
                 </h2>
@@ -20,13 +21,14 @@ function Search(){
                     />
                     <button
                         className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md"
+                        
                     >
                         Search
                     </button>
-                </div> 
+                </div>
             </div>
         </section>
     )
 }
 
-export default Search
+export default Search;

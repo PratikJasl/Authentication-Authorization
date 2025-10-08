@@ -1,9 +1,9 @@
 import { atom } from 'recoil';
 
 export interface AuthState {
-  isLoggedIn: boolean;
-  email: string | null;
-  role: string | null;
+  isLoggedIn?: boolean;
+  email?: string | null;
+  role?: string | null;
 }
 
 const initialAuthState: AuthState = {
@@ -17,7 +17,7 @@ export const logInStatus = atom<AuthState>({
     default: initialAuthState
 });
 
-export const emailState = atom<string | null>({
-    key: 'emailState',
-    default: null
-});
+// export const emailState = atom<string | null>({
+//     key: 'emailState',
+//     default: null
+// });

@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useRecoilValue } from "recoil";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { emailState } from "../../atom/userAtom";
+import { logInStatus } from "../../atom/userAtom";
 import { verifyEmailOtpSchema, type verifyOtpData } from "../../schema/authSchema";
 import { otpVerification } from "../../services/auth/otpService";
 import { sendEmailVerificationOtp } from '../../services/auth/emailService';
@@ -15,7 +15,7 @@ function VerifyOTP(){
     const [ redirect, setRedirect ] = useState(false);
     const [ isResending, setIsResending ] = useState(false);
     const [coolDownTimer, setCoolDownTimer] = useState(0);
-    const emailFromRecoil = useRecoilValue(emailState);
+    const emailFromRecoil = useRecoilValue(logInStatus);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const navigate = useNavigate();
     const { register, handleSubmit, formState: {errors}, reset } = useForm({
@@ -50,7 +50,7 @@ function VerifyOTP(){
 
     //@dev: Check if email exists in Recoil state, if not redirect to verify email.
     useEffect(() => {
-        if(!emailFromRecoil){
+        if(!emailFromRecoil.email){
             toast.error("Your email verification session has expired or was interrupted. Please start over.");
             navigate("/verify-email");
         }
@@ -61,7 +61,7 @@ function VerifyOTP(){
             return;
         }
 
-        const email = emailFromRecoil;
+        const email = emailFromRecoil.email;
         if (!email) {
             toast.error("Email not found. Please go back to reset password.");
             setIsResending(false);
